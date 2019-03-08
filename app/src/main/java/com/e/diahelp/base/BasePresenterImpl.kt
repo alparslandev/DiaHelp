@@ -1,6 +1,6 @@
 package com.e.diahelp.base
 
-class BasePresenterImpl<V : BaseView> : BasePresenter<V> {
+open class BasePresenterImpl<V : BaseView> : BasePresenter<V> {
 
     protected  var mView : V? = null
 
