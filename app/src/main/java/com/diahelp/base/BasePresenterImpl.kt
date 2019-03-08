@@ -1,4 +1,4 @@
-package com.e.diahelp.base
+package com.diahelp.base
 
 open class BasePresenterImpl<V : BaseView> : BasePresenter<V> {
 

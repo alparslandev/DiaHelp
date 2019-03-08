@@ -8,14 +8,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:665113921939:android:afab0272205b645d",
+        "mobilesdk_app_id": "1:665113921939:android:f24812e156f75986",
         "android_client_info": {
           "package_name": "com.diahelp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "665113921939-vo6eb221u7hvrsesmqe2rpfc42q726h1.apps.googleusercontent.com",
+          "client_id": "665113921939-ujcsij567uoovlcrjhjuk2dic146rh78.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.diahelp",

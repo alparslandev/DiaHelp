@@ -1,6 +1,6 @@
-package com.e.diahelp.login
+package com.diahelp.login
 
-import com.e.diahelp.base.BasePresenterImpl
+import com.diahelp.base.BasePresenterImpl
 
 class LoginPresenter : BasePresenterImpl<LoginContract.View>(), LoginContract.Presenter {
     override fun loginWithCredientials(email : String, pass : String) {

@@ -1,4 +1,4 @@
-package com.e.diahelp.base
+package com.diahelp.base
 
 import android.content.Context
 import android.os.Bundle

@@ -1,7 +1,7 @@
-package com.e.diahelp.login
+package com.diahelp.login
 
-import com.e.diahelp.base.BasePresenter
-import com.e.diahelp.base.BaseView
+import com.diahelp.base.BasePresenter
+import com.diahelp.base.BaseView
 
 object LoginContract {
 

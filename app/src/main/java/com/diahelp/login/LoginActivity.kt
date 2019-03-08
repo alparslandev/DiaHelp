@@ -1,10 +1,11 @@
-package com.e.diahelp.login
+package com.diahelp.login
 
 import android.os.Bundle
-import com.e.diahelp.R
-import com.e.diahelp.base.BaseActivity
+import com.diahelp.base.BaseActivity
+import com.diahelp.R
 
 class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View{
+
 
     override fun showLoading(visibility: Int) {
 
