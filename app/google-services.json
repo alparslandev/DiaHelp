@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:665113921939:android:afab0272205b645d",
         "android_client_info": {
-          "package_name": "com.e.diahelp"
+          "package_name": "com.diahelp"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "665113921939-vo6eb221u7hvrsesmqe2rpfc42q726h1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.e.diahelp",
+            "package_name": "com.diahelp",
             "certificate_hash": "b9c50078bf8857335019742fabe6a20a19d2619e"
           }
         },

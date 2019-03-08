@@ -8,10 +8,9 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.e.diahelp"
+        applicationId 'com.diahelp'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode rootProject.ext.versionCode
         versionName getBuildVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -21,10 +20,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
