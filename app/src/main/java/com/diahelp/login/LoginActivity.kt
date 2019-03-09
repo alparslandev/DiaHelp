@@ -1,7 +1,13 @@
 package com.diahelp.login
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
 import com.diahelp.MainActivity
@@ -17,7 +23,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View{
+
+class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
 
     companion object {
         private const val TAG = "GoogleActivity"
@@ -28,7 +35,8 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun showLoading(visibility: Int) {
-
+        pb_login.visibility = visibility
+        btn_sign_in.isEnabled = visibility == View.GONE
     }
 
     override var mPresenter: LoginContract.Presenter = LoginPresenter()
@@ -37,10 +45,8 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        signInButton.setOnClickListener {signIn()}
-        signOutButton.setOnClickListener{signOut()}
-        disconnectButton.setOnClickListener{revokeAccess()}
-
+        btn_sign_in.isEnabled = false
+        btn_sign_in.setOnClickListener { signIn() }
         mPresenter.loginWithCredientials("", "")
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -50,6 +56,35 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
+
+        val spannableString = SpannableString(
+            resources.getString(R.string.user_agreement_text_prefix)
+                    + " " + resources.getString(R.string.user_agreement_text)
+        )
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val userDialog = UserAgreementDialog(widget.context)
+                userDialog.show()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = true
+            }
+        }
+        spannableString.setSpan(
+            clickableSpan,0,
+            resources.getString(R.string.user_agreement_text_prefix).length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        tv_user_agreement.text = spannableString
+        tv_user_agreement.movementMethod = LinkMovementMethod.getInstance()
+        tv_user_agreement.highlightColor = Color.TRANSPARENT
+
+        chk_user_agreement.setOnCheckedChangeListener {_, isChecked ->
+            btn_sign_in.isEnabled = isChecked
+        }
     }
 
     public override fun onStart() {
@@ -98,6 +133,7 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
     }
 
     private fun signIn() {
+        showLoading(View.VISIBLE)
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -120,12 +156,6 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
         showLoading(View.GONE)
         if (user != null) {
             startActivity(Intent(this, MainActivity::class.java))
-        } else {
-            status.setText(R.string.signed_out)
-            detail.text = null
-            signInButton.visibility = View.VISIBLE
-            signOutAndDisconnect.visibility = View.GONE
         }
-
     }
 }

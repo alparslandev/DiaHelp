@@ -1,89 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main_layout"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/grey_100"
-              android:orientation="vertical"
-              android:weightSum="4">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_300">
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_opening"
+            android:alpha="0.3"/>
+
+    <ProgressBar
+            android:id="@+id/pb_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_centerInParent="true"/>
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:weightSum="4">
 
-        <ImageView
-                style="@style/ThemeOverlay.FirebaseIcon"
-                android:id="@+id/googleIcon"
-                android:contentDescription="@string/desc_firebase_lockup"
-                android:src="@drawable/firebase_lockup_400"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
         <TextView
-                android:id="@+id/titleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/title_bottom_margin"
-                android:text="@string/google_title_text"
-                android:theme="@style/ThemeOverlay.MyTitleText"/>
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="@string/welcome"
+                android:textColor="@color/my_color"
+                android:textSize="30sp"/>
 
         <TextView
-                android:id="@+id/status"
-                style="@style/ThemeOverlay.MyTextDetail"
-                android:text="@string/signed_out"/>
-
-        <TextView
-                android:id="@+id/detail"
-                style="@style/ThemeOverlay.MyTextDetail"
-                tools:text="Firebase User ID: 123456789abc"/>
-
-    </LinearLayout>
-
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/grey_300">
-
-        <com.google.android.gms.common.SignInButton
-                android:id="@+id/signInButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="visible"
-                tools:visibility="gone"/>
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="@string/welcome_big"
+                android:textColor="@color/my_color"
+                android:textSize="20sp"/>
 
         <LinearLayout
-                android:id="@+id/signOutAndDisconnect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:layout_weight="1">
 
-            <Button
-                    android:id="@+id/signOutButton"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
+            <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/chk_user_agreement"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sign_out"
-                    android:theme="@style/ThemeOverlay.MyDarkButton"/>
-            <Button
-                    android:id="@+id/disconnectButton"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
+                    android:layout_gravity="center_vertical"/>
+
+            <TextView
+                    android:id="@+id/tv_user_agreement"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/disconnect"
-                    android:theme="@style/ThemeOverlay.MyDarkButton"/>
+                    android:layout_gravity="center_vertical"
+                    android:focusableInTouchMode="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:minLines="2"
+                    android:lines="2"
+                    tools:text="Kullanıcı Sözleşmesi şartlarını okudum ve kabul ediyorum."/>
         </LinearLayout>
-    </RelativeLayout>
-</LinearLayout>
+
+        <com.google.android.gms.common.SignInButton
+                android:id="@+id/btn_sign_in"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                tools:visibility="visible"/>
+
+    </LinearLayout>
+</RelativeLayout>
