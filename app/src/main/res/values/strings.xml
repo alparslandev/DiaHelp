@@ -13,6 +13,7 @@
     <string name="user_agreement_text"> şartlarını okudum ve kabul ediyorum.</string>
     <string name="user_agreement_text_prefix">Kullanıcı Sözleşmesi</string>
     <string name="welcome_big">Uygulamamız, tip 1 diyabet hastalarının, gıdaların barındırdığı karbonhidrat miktarını ölçmelerinde yardımcı olmaktadır.</string>
-
+    <string name="carb_quantity">%s gr Karbonhidrat</string>
+    <string name="no_carb">Yemek ye biraz</string>
 
 </resources>
