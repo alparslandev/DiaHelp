@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(
 
     override fun showLoading(visibility: Int) {
         pb_login.visibility = visibility
-        btn_sign_in.isEnabled = visibility == View.GONE
+        btn_sign_in.isEnabled = visibility == View.GONE && chk_user_agreement.isChecked
     }
 
     override var mPresenter: LoginContract.Presenter = LoginPresenter()
