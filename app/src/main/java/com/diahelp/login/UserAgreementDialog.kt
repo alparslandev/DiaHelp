@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.dialog_user_agreement.*
 class UserAgreementDialog(context: Context) : Dialog(context) {
 
     init {
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE)
+        window.requestFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_user_agreement)
-        getWindow().setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+        window.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
         iv_close.setOnClickListener{ dismiss() }
         val txtBookReferance = findViewById(R.id.txt_referance_book) as TextView
         txtBookReferance.movementMethod = LinkMovementMethod.getInstance()
