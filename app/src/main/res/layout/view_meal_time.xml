@@ -12,6 +12,8 @@
             android:layout_width="wrap_content"
             android:background="@drawable/bg_meal_time_icons"
             android:gravity="center_horizontal"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_meal_dining"/>
 

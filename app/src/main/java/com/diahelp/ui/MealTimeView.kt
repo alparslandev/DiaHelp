@@ -17,6 +17,14 @@ class MealTimeView @JvmOverloads constructor(context: Context, attrs: AttributeS
         img_button_meal_icon.setImageResource(a.getResourceId(R.styleable.MealTimeView_icon, R.drawable.ic_meal_dining))
         isClickable = true
         isFocusable = true
+        img_button_meal_icon.setOnClickListener { callOnClick() }
+        /*val outValue = TypedValue()
+        getContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+        setBackgroundResource(outValue.resourceId)*/
         a.recycle()
+    }
+
+    fun getText() : String {
+        return txt_meal.text.toString()
     }
 }

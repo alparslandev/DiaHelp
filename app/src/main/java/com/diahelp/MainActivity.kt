@@ -2,11 +2,16 @@ package com.diahelp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.Toast
 import com.diahelp.ui.DayView
+import com.diahelp.ui.MealTimeView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    open val EXTRA_TYPE = "EXTRA_TYPE"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +25,30 @@ class MainActivity : AppCompatActivity() {
 
             override fun onClickForward(date: Calendar) {
 
-            }})
+            }
+        })
+
+        mv_snakes_breakfast.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_snakes_dining.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_snakes_lunch.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_before_bed.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_breakfast.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_dining.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_lunch.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_night.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+        mv_other.setOnClickListener { v: View? -> redirectToAddFoods(v) }
+
+
     }
+
+    fun redirectToAddFoods(view : View?) {
+        val text = (view as MealTimeView).getText()
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        /*val intent = Intent(this, ::class.java)
+        intent.putExtra(EXTRA_TYPE, text)
+        startActivity(intent)*/
+    }
+
     fun refreshSumofCarbs(sum : Int) {
         var text = resources.getString(R.string.no_carb)
         if (sum > 0) text = String.format(resources.getString(R.string.carb_quantity), sum.toString())
