@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_height="wrap_content"
+       android:layout_width="wrap_content"
+       android:gravity="center"
+       android:background="?selectableItemBackgroundBorderless">
+
+    <ImageButton
+            android:id="@+id/img_button_meal_icon"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@drawable/bg_meal_time_icons"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_meal_dining"/>
+
+    <TextView
+            android:id="@+id/txt_meal"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            tools:text="@string/meal_other"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:textSize="16sp"/>
+
+</merge>
