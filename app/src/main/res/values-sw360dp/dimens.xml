@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="page_horizontal_padding">16dp</dimen>
+    <dimen name="general_input_height">62dp</dimen>
+    <dimen name="general_spinner_height">45dp</dimen>
+
+</resources>
