@@ -5,9 +5,15 @@
     <color name="colorAccent">#58a5f0</color>
 
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
     <color name="grey_500">#9E9E9E</color>
     <color name="my_color">#3c4c6b</color>
     <color name="onclickactive">#85000000</color>
+    <color name="my_divider">#BDBDBD</color>
+    <color name="expbackground">#85E0E0E0</color>
+    <color name="colorSecondary">#29434e</color>
+    <color name="colorSecondaryLighter">#607d8b</color>
+    <color name="colorBackground">#efefef</color>
 </resources>

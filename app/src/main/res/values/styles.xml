@@ -45,4 +45,41 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="AutocompleteStandart" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:ellipsize">start</item>
+        <item name="android:selectAllOnFocus">true</item>
+    </style>
+
+    <style name="HomeSpinnerStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/general_spinner_height</item>
+        <item name="android:layout_marginLeft">@dimen/page_horizontal_padding</item>
+        <item name="android:dropDownSelector">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/bg_spinner</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:minWidth">180dp</item>
+    </style>
+
+    <style name="EditTextStandart" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
+        <item name="android:ellipsize">start</item>
+        <item name="android:selectAllOnFocus">true</item>
+    </style>
+
+    <style name="Autocomplete" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="colorControlNormal">@color/my_divider</item>
+        <item name="colorControlActivated">@color/expbackground</item>
+    </style>
 </resources>

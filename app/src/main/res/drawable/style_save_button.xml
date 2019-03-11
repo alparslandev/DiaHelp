@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><!--  res/drawable/edittext_rounded_corners.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle" android:thickness="0dp">
+            <corners android:radius="5dp" />
+            <gradient
+                    android:angle="270"
+                    android:endColor="@color/colorSecondaryLighter"
+                    android:startColor="@color/colorSecondaryLighter"
+                    android:type="linear"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle" android:thickness="0dp">
+            <corners android:radius="5dp" />
+            <gradient
+                    android:angle="270"
+                    android:endColor="@color/colorSecondary"
+                    android:startColor="@color/colorSecondary"
+                    android:type="linear" />
+        </shape>
+    </item>
+</selector>

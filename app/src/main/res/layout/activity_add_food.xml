@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pnl_activity_add_food"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".addfood.AddFoodActivity">
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_add_food"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <ImageButton
+                        android:id="@+id/btn_add_food_blood_glucose"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/ic_healing"
+                        style="@style/ToolbarIcons"/>
+
+                <ImageButton
+                        android:id="@+id/btn_clear_all"
+                        android:src="@drawable/ic_delete_forever"
+                        android:layout_centerHorizontal="true"
+                        style="@style/ToolbarIcons"/>
+
+                <com.karbonhidratsayar.ui.CustomIconButton
+                        android:id="@+id/btn_add_food_open_favs"
+                        android:src="@drawable/ic_fav_empty"
+                        android:layout_alignParentEnd="true"
+                        style="@style/ToolbarIcons"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollview"
+            android:layout_below="@id/appbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/edt_choose_food"
+                    style="@style/AutocompleteStandart"
+                    android:layout_width="match_parent"
+                    android:completionThreshold="1"
+                    android:drawableLeft="@drawable/ic_search"
+                    android:hint="@string/print_food"
+                    android:minLines="2"
+                    android:theme="@style/Autocomplete"/>
+
+            <RelativeLayout
+                    android:id="@+id/pnl_select_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:visibility="gone">
+
+                <android.support.v7.widget.AppCompatSpinner
+                        android:id="@+id/spinner_unit"
+                        style="@style/HomeSpinnerStyle"/>
+
+                <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/edt_add_food_quantity"
+                        style="@style/EditTextStandart"
+                        android:layout_width="wrap_content"
+                        android:minWidth="80dp"
+                        android:minHeight="40dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:hint="@string/quantity"
+                        app:backgroundTint="@color/my_divider"
+                        android:gravity="center"
+                        android:inputType="numberDecimal"
+                        android:maxLength="3"
+                        android:maxLines="1"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:id="@+id/pnl_quantity_add_food"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="7dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="7dp"
+                    android:visibility="gone">
+
+                <Button
+                        android:id="@+id/btn_add_to_meal_plan"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/style_save_button"
+                        android:gravity="center"
+                        android:text="    Yiyeceği Ekle   +    "
+                        android:textColor="@color/white"
+                        android:textSize="14sp"/>
+
+                <TextView
+                        android:id="@+id/txt_informer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/btn_add_to_meal_plan"
+                        android:paddingRight="10dp"
+                        android:textSize="14sp"
+                        tools:text="Birim Seçiniz"/>
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_meals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_marginRight="-3dp"
+                    tools:listitem="@layout/item_meal_plan"/>
+
+            <TextView
+                    android:id="@+id/txt_total_carbs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    tools:text="Toplam Karbonhidrat"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_save_meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorback_80"
+            android:onClick="AddFoodOnClickListener"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_save"
+            android:tint="@color/White"
+            android:visibility="gone"
+            app:elevation="3dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+</RelativeLayout>
