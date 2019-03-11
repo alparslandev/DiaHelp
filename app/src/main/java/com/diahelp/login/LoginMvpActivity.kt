@@ -12,7 +12,7 @@ import android.util.Log
 import android.view.View
 import com.diahelp.MainActivity
 import com.diahelp.R
-import com.diahelp.base.BaseActivity
+import com.diahelp.base.BaseMvpActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,7 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
 
-class LoginActivity : BaseActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
+class LoginMvpActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
 
     companion object {
         private const val TAG = "GoogleActivity"

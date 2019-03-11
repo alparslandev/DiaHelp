@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 
-abstract class BaseActivity<in V : BaseView, T : BasePresenter<V>> : AppCompatActivity(), BaseView {
+abstract class BaseMvpActivity<in V : BaseView, T : BasePresenter<V>> : AppCompatActivity(), BaseView {
 
     protected abstract var mPresenter: T
 
