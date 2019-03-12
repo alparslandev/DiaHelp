@@ -24,7 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
 
 
-class LoginMvpActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
+class LoginActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
 
     companion object {
         private const val TAG = "GoogleActivity"

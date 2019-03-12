@@ -171,7 +171,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_save"
-            android:tint="@color/White"
+            android:tint="@color/white"
             android:visibility="gone"
             app:elevation="3dp"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
