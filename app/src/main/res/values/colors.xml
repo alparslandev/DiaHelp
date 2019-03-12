@@ -16,4 +16,11 @@
     <color name="colorSecondary">#29434e</color>
     <color name="colorSecondaryLighter">#607d8b</color>
     <color name="colorBackground">#efefef</color>
+
+    <color name="secondary_text_material_light">#ffffff</color>
+    <color name="darkred">#c91f1f</color>
+    <color name="successLight">#99256A27</color>
+    <color name="successDark">#99153C17</color>
+    <color name="color_fav">#E7214A</color>
+    <color name="colorback_80">#80D8FF</color>
 </resources>
