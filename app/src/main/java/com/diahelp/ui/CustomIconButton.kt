@@ -18,6 +18,6 @@ class CustomIconButton : AppCompatImageButton {
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        setAlpha(if (enabled) 1 else 0.4f)
+        alpha = if (enabled) 1.0f else 0.4f
     }
 }

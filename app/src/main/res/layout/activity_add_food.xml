@@ -39,7 +39,7 @@
                         android:layout_centerHorizontal="true"
                         style="@style/ToolbarIcons"/>
 
-                <com.karbonhidratsayar.ui.CustomIconButton
+                <com.diahelp.ui.CustomIconButton
                         android:id="@+id/btn_add_food_open_favs"
                         android:src="@drawable/ic_fav_empty"
                         android:layout_alignParentEnd="true"
