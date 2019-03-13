@@ -54,7 +54,7 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     var myRef : DatabaseReference
     init {
         // todo database referance
-        myRef = database.getReference("food_db")
+        myRef = database.getReference("")
     }
 
     private val favouriteList: List<FavouriteMeals>
@@ -106,7 +106,7 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 fooddb_ArrayList.add(dataSnapshot.key.toString())
                 FoodDBArrayAdapter =
                     ArrayAdapter(applicationContext, R.layout.styled_autocompletetextview, fooddb_ArrayList)
-                edt_choose_food!!.setAdapter<ArrayAdapter<String>>(FoodDBArrayAdapter)
+                edt_choose_food.setAdapter<ArrayAdapter<String>>(FoodDBArrayAdapter)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
