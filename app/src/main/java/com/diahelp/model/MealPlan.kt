@@ -6,5 +6,6 @@ data class MealPlan (
     @JvmField var CarbsInMeal: Double = 0.0,
     @JvmField var Quantity: Double = 0.0,
     @JvmField var Unit: String = "",
-    @JvmField var Meal: String = ""
+    @JvmField var Meal: String = "",
+    @JvmField var isFavourite: Boolean = false
 )

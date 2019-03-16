@@ -28,8 +28,12 @@
     <string name="quantity">Miktar</string>
     <string name="choose_unit">Birim Seçiniz</string>
     <string name="carb_quantity_in_meal">Bir %s %s %s gr karbonhirat içerir</string>
-    <string name="total_carb">Toplam Karbonhidrat: %d</string>
+    <string name="total_carb">Toplam Karbonhidrat: %s</string>
+    <string name="carb_of_meal">Karbonhidrat: %s</string>
     <string name="empty_quantity">Lütfen miktarı giriniz.</string>
     <string name="choose_meal_from_list">Lütfen listeden yiyecek seçiniz.</string>
     <string name="choose_meal">Lütfen yiyecek seçiniz.</string>
+    <string name="quantity_unit">%s %s</string>
+    <string name="meal_added_to_favourites">Yiyecek Favorilere Eklendi</string>
+    <string name="meal_removed_from_favourites">Yiyecek Favorilerden Çıkarıldı</string>
 </resources>

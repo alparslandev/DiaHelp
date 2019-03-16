@@ -66,13 +66,16 @@
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/edt_choose_food"
-                    style="@style/AutocompleteStandart"
                     android:layout_width="match_parent"
-                    android:completionThreshold="1"
+                    android:layout_height = "wrap_content"
                     android:drawableLeft="@drawable/ic_search"
+                    android:textColor = "@color/black"
+                    android:textCursorDrawable="@null"
                     android:hint="@string/print_food"
-                    android:minLines="2"
-                    android:theme="@style/Autocomplete"/>
+                    android:selectAllOnFocus="true"
+                    android:completionThreshold="1"
+                    android:ellipsize="start"
+                    android:minLines="2"/>
 
             <RelativeLayout
                     android:id="@+id/pnl_select_unit"

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Toast
 import com.diahelp.addfood.AddFoodActivity
 import com.diahelp.ui.DayView
 import com.diahelp.ui.MealTimeView
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     fun redirectToAddFoods(view : View?) {
         val text = (view as MealTimeView).getText()
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         val intent = Intent(this, AddFoodActivity::class.java)
         intent.putExtra(EXTRA_TYPE, text)
         startActivity(intent)
