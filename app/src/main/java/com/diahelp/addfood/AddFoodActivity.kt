@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.annotation.Nullable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -20,41 +20,125 @@ import android.widget.*
 import com.diahelp.MainActivity
 import com.diahelp.R
 import com.diahelp.base.BaseActivity
-import com.diahelp.base.BaseMvpActivity
 import com.diahelp.model.FavouriteMeals
-import com.diahelp.model.Foods
 import com.diahelp.model.MealPlan
-import com.diahelp.tools.StringRealm
+import com.diahelp.tools.wrappers.ChildEventListenerWrapper
+import com.diahelp.tools.wrappers.TextWatcherWrapper
 import com.diahelp.ui.CustomIconButton
 import com.google.firebase.database.*
-import io.realm.Realm
 import io.realm.RealmList
 import kotlinx.android.synthetic.main.activity_add_food.*
 import kotlinx.android.synthetic.main.item_meal_plan.*
 import tools.NumberFormatManager
 
 import java.util.ArrayList
-import java.util.Collections
 
-class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
+class AddFoodActivity : BaseActivity() {
 
     private val fooddb_ArrayList = ArrayList<String>() // bu arraylist yiyecek listesi için
     private val unit_ArrayList = ArrayList<String>()
-    private var FoodDBArrayAdapter: ArrayAdapter<String>? = null
-    private var carb_value: String? = null
+    private var FoodDBArrayAdapter = ArrayAdapter(applicationContext, R.layout.styled_autocompletetextview, fooddb_ArrayList)
+    private var carb_value = ""
     private var choosenFood = ""
-    private val mealName: String? = null
+    private val mealName = ""
     private var totalCarbs = 0.0
-    private var mealList: RealmList<MealPlan>? = null
-
-    private var rvAdapter: RecyclerViewAdapter? = null
-    private var unitListAdapter: ArrayAdapter<*>? = null
+    private var mealList = RealmList<MealPlan>()
+    private var rvAdapter = RecyclerViewAdapter(mealList)
+    private var unitListAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, unit_ArrayList)
 
     var database : FirebaseDatabase = FirebaseDatabase.getInstance()
     var myRef : DatabaseReference
     init {
-        // todo database referance
+        setSupportActionBar(toolbar_add_food)
         myRef = database.getReference("")
+
+        edt_choose_food.addTextChangedListener(object : TextWatcherWrapper {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count < 1) clearViewItems(true)
+            }
+        })
+
+        myRef.addChildEventListener(object : ChildEventListenerWrapper {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                fooddb_ArrayList.add(dataSnapshot.key.toString())
+                edt_choose_food.setAdapter<ArrayAdapter<String>>(FoodDBArrayAdapter)
+            }
+        })
+
+        spinner_unit.isEnabled = false
+        unitListAdapter.setDropDownViewResource(R.layout.simple_spinner_item)
+        spinner_unit.adapter = unitListAdapter
+
+        setFavButtonEnable()
+        edt_choose_food.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+            choosenFood = adapterView.getItemAtPosition(i).toString()
+            spinner_unit.isEnabled = true
+            unit_ArrayList.clear()
+            val choosenFoodRef = myRef.child(choosenFood)
+            choosenFoodRef.addChildEventListener(object : ChildEventListenerWrapper {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                    val unit = dataSnapshot.key
+                    if (!unit_ArrayList.contains(unit))
+                        unit_ArrayList.add(unit.toString())
+
+                    edt_add_food_quantity.requestFocus()
+                    spinner_unit.isEnabled = if (unit_ArrayList.size == 1) false else true
+                    unitListAdapter.notifyDataSetChanged()
+                    setTxtInformer(unit_ArrayList[0], choosenFood, carb_value , View.VISIBLE)
+                }
+            })
+        }
+
+        btn_add_to_meal_plan.setOnClickListener {
+            // todo bu butona aktif olmadıkça basılamasın.
+            if (!TextUtils.isEmpty(choosenFood)) {
+                if (fooddb_ArrayList.contains(edt_choose_food.text.toString())) {
+                    val txt = edt_add_food_quantity.text.toString()
+                    if (!TextUtils.isEmpty(txt)) {
+                        val model = MealPlan()
+                        model.CarbsInMeal = carb_value.toDouble() * txt.toDouble()
+                        model.MealName = choosenFood
+                        model.Unit = spinner_unit.selectedItem.toString()
+                        model.Id = getMaxID("meal")
+                        model.Quantity = java.lang.Double.parseDouble(txt)
+                        model.Meal = mealName
+                        updateMealList(model)
+                    } else {
+                        showEmptyValueToast(getString(R.string.empty_quantity))
+                    }
+                } else {
+                    showEmptyValueToast(getString(R.string.choose_meal_from_list))
+                }
+            } else {
+                showEmptyValueToast(getString(R.string.choose_meal))
+            }
+        }
+
+        spinner_unit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val choosenunitRef = myRef.child(choosenFood).child(unit_ArrayList[position])
+                choosenunitRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        carb_value = dataSnapshot.value!!.toString()
+                        setTxtInformer(unit_ArrayList[position], choosenFood, carb_value , View.VISIBLE)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {}
+                })
+            }
+        }
+        btn_clear_all.setOnClickListener{
+            clearViewItems(false)
+            val it = mealList.iterator()
+            while (it.hasNext()) {
+                // Silmeyiniz. meal objesi boşuna değildir. it.next çalışmaktadır.
+                val (Id, MealName, CarbsInMeal, Quantity, Unit, Meal) = it.next()
+                it.remove()
+            }
+            setTxtCarbCounter(View.GONE)
+            totalCarbs = 0.0
+        }
     }
 
     private val favouriteList: List<FavouriteMeals>
@@ -70,161 +154,57 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
-        initializeUiComponents()
-        init_Firebase()
-        val recyclerViewMealPlan = findViewById<View>(R.id.rv_meals) as RecyclerView
-        recyclerViewMealPlan.layoutManager =
-            LinearLayoutManager(this@AddFoodActivity, LinearLayoutManager.VERTICAL, false)
-        recyclerViewMealPlan.adapter = rvAdapter
-        recyclerViewMealPlan.isNestedScrollingEnabled = false
+        rv_meals.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv_meals.adapter = rvAdapter
+        rv_meals.isNestedScrollingEnabled = false
 
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_divider))
-        recyclerViewMealPlan.addItemDecoration(dividerItemDecoration)
+        rv_meals.addItemDecoration(dividerItemDecoration)
     }
 
     private fun updateMealList(mealPlan: MealPlan) {
-        mealList!!.add(0, mealPlan)
+        mealList.add(0, mealPlan)
         totalCarbs += mealPlan.CarbsInMeal * mealPlan.Quantity
         setTxtCarbCounter(View.VISIBLE)
         clearViewItems(false)
     }
 
-    private fun initializeUiComponents() {
-        val myToolbar = findViewById<View>(R.id.toolbar_add_food) as Toolbar
-        setSupportActionBar(myToolbar)
-
-
-        mealList = RealmList()
-        rvAdapter = RecyclerViewAdapter(mealList!!)
-        unitListAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, unit_ArrayList)
-        watchUserTypingEvent(edt_choose_food!!)
-
-
-        myRef.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                fooddb_ArrayList.add(dataSnapshot.key.toString())
-                FoodDBArrayAdapter =
-                    ArrayAdapter(applicationContext, R.layout.styled_autocompletetextview, fooddb_ArrayList)
-                edt_choose_food.setAdapter<ArrayAdapter<String>>(FoodDBArrayAdapter)
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-
-        spinner_unit!!.isEnabled = false
-        unitListAdapter!!.setDropDownViewResource(R.layout.simple_spinner_item)
-        spinner_unit!!.adapter = unitListAdapter
-
-        setFavButtonEnable()
-        edt_choose_food!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            choosenFood = adapterView.getItemAtPosition(i).toString()
-            spinner_unit!!.isEnabled = true
-            unit_ArrayList.clear()
-            val choosenFoodRef = myRef.child(choosenFood)
-            choosenFoodRef.addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                    val unit = dataSnapshot.key
-                    if (!unit_ArrayList.contains(unit))
-                        unit_ArrayList.add(unit.toString())
-
-                    edt_add_food_quantity!!.requestFocus()
-                    spinner_unit!!.isEnabled = if (unit_ArrayList.size == 1) false else true
-                    unitListAdapter!!.notifyDataSetChanged()
-                    setTxtInformer(
-                        "Bir " + unit_ArrayList[0] + " " + choosenFood
-                                + " " + carb_value + " gr karbonhidrat içerir.", View.VISIBLE
-                    )
-                }
-
-                override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-
-                override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-
-                override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-
-                override fun onCancelled(databaseError: DatabaseError) {}
-            })
-        }
-
-        spinner_unit!!.onItemSelectedListener = this
-    }
-
     private fun setFavButtonEnable() {
-        val button = findViewById<CustomIconButton>(R.id.btn_add_food_open_favs)
-        button.setOnClickListener {
+        btn_add_food_open_favs.setOnClickListener {
            /* if (favouriteList.size > 0)
                 setFavDialog()*/
         }
-        button.isEnabled = favouriteList.size != 0
+        btn_add_food_open_favs.isEnabled = favouriteList.size != 0
     }
 
     fun clearViewItems(isChoosenIncluded: Boolean) {
         if (edt_add_food_quantity != null)
-            edt_add_food_quantity!!.setText("")
+            edt_add_food_quantity.setText("")
         if (!isChoosenIncluded) {
-            edt_choose_food!!.setText("")
+            edt_choose_food.setText("")
             closeSoftKeyboard(edt_choose_food)
         }
-        setTxtInformer("Birim Seçiniz", View.GONE)
+        setTxtInformer(null, null, null, View.GONE)
         unit_ArrayList.clear()
-        unitListAdapter!!.notifyDataSetChanged()
-        rvAdapter!!.notifyDataSetChanged()
+        unitListAdapter.notifyDataSetChanged()
+        rvAdapter.notifyDataSetChanged()
     }
 
     fun setTxtCarbCounter(Visibility: Int) {
-        findViewById<View>(R.id.btn_save_meal).visibility = Visibility
-
-        (findViewById<View>(R.id.txt_total_carbs) as TextView).visibility = Visibility
-        (findViewById<View>(R.id.txt_total_carbs) as TextView).text = if (Visibility == View.GONE)
-            ""
-        else
-            "Toplam Karbonhidrat: " + NumberFormatManager.getFormattedNumber(totalCarbs)
+        btn_save_meal.visibility = Visibility
+        txt_total_carbs.visibility = Visibility
+        txt_total_carbs.text = if (Visibility == View.GONE) ""
+        else String.format(getString(R.string.total_carb), NumberFormatManager.getFormattedNumber(totalCarbs))
     }
 
-    private fun watchUserTypingEvent(edt: AutoCompleteTextView) {
-        edt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-                if (count < 1)
-                    clearViewItems(true)
-            }
-
-            override fun afterTextChanged(editable: Editable) {}
-        })
+    fun setTxtInformer(unit : String?, meal : String?, carb : String?, visibility: Int) {
+        txt_informer.text = if (!TextUtils.isEmpty(unit)) {
+            String.format(getString(R.string.carb_quantity_in_meal), unit, meal, carb)
+        } else getString(R.string.choose_unit)
+        pnl_select_unit.visibility = visibility
+        pnl_quantity_add_food.visibility = visibility
     }
-
-    fun setTxtInformer(text: String, visibility: Int) {
-        (findViewById<View>(R.id.txt_informer) as TextView).text = text
-        findViewById<View>(R.id.pnl_select_unit).visibility = visibility
-        findViewById<View>(R.id.pnl_quantity_add_food).visibility = visibility
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        val choosenFoodRef = myRef.child(choosenFood)
-        val choosenunitRef = choosenFoodRef.child(unit_ArrayList[position])
-        choosenunitRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                carb_value = dataSnapshot.value!!.toString()
-
-                setTxtInformer(
-                    "Bir " + unit_ArrayList[position] + " " + choosenFood
-                            + " " + carb_value + " gr karbonhidrat içerir.", View.VISIBLE
-                )
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>) {}
 
     inner class FavMealsHandler(internal var context: Context) : Handler() {
 
@@ -233,7 +213,7 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
             val id = msg.obj as String
             val (Id, MealName, CarbsInMeal, Quantity, Unit) = favouriteList[Integer.parseInt(id)]
             val mealPlan = MealPlan()
-            mealPlan.Meal = mealName.toString()
+            mealPlan.Meal = mealName
             mealPlan.CarbsInMeal = CarbsInMeal
             mealPlan.MealName = MealName
             mealPlan.Quantity = Quantity
@@ -271,31 +251,21 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 mealTypeDialog();
                 break;*/
             //R.id.btn_add_food_blood_glucose -> setBloodGlucoseDialog()
-            R.id.btn_clear_all -> {
-                clearViewItems(false)
-                val it = mealList!!.iterator()
-                while (it.hasNext()) {
-                    // Silmeyiniz. meal objesi boşuna değildir. it.next çalışmaktadır.
-                    val (Id, MealName, CarbsInMeal, Quantity, Unit, Meal) = it.next()
-                    it.remove()
-                }
-                setTxtCarbCounter(View.GONE)
-                totalCarbs = 0.0
-            }
-            R.id.btn_save_meal -> if (mealList != null && mealList!!.size > 0 && mealName != null) {
+
+            R.id.btn_save_meal -> if (mealList.size > 0) {
                 /*mRealm = Realm.getDefaultInstance()
                 mRealm.executeTransaction(Realm.Transaction { realm ->
                     Collections.reverse(mealList)
                     val mealFoodListToRealm = RealmList<StringRealm>()
 
-                    for (i in mealList!!.indices) {
+                    for (i in mealList.indices) {
                         val Id = getMaxID("meal")
                         val meal = realm.createObject(MealPlan::class.java, Id)
-                        meal.Unit = mealList!![i]!!.Unit
-                        meal.Quantity = mealList!![i]!!.Quantity
-                        meal.MealName = mealList!![i]!!.MealName
-                        meal.CarbsInMeal = mealList!![i]!!.CarbsInMeal
-                        meal.Meal = mealList!![i]!!.Meal
+                        meal.Unit = mealList[i]!!.Unit
+                        meal.Quantity = mealList[i]!!.Quantity
+                        meal.MealName = mealList[i]!!.MealName
+                        meal.CarbsInMeal = mealList[i]!!.CarbsInMeal
+                        meal.Meal = mealList[i]!!.Meal
                         val stringRealm = realm.createObject(StringRealm::class.java!!)
                         stringRealm.mealId = Id.toString()
                         mealFoodListToRealm.add(stringRealm)
@@ -306,27 +276,6 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 })*/
                 finish()
                 startActivity(Intent(view.context, MainActivity::class.java))
-            }
-            R.id.btn_add_to_meal_plan -> if (!TextUtils.isEmpty(choosenFood)) {
-                if (fooddb_ArrayList.contains(edt_choose_food!!.text.toString())) {
-                    if (!TextUtils.isEmpty(edt_add_food_quantity!!.text.toString())) {
-                        val model = MealPlan()
-                        model.CarbsInMeal =
-                            java.lang.Double.parseDouble(carb_value!!) * java.lang.Double.parseDouble(edt_add_food_quantity!!.text.toString())
-                        model.MealName = choosenFood
-                        model.Unit = spinner_unit!!.selectedItem.toString()
-                        model.Id = getMaxID("meal")
-                        model.Quantity = java.lang.Double.parseDouble(edt_add_food_quantity!!.text.toString())
-                        model.Meal = mealName.toString()
-                        updateMealList(model)
-                    } else {
-                        showEmptyValueToast("Lütfen miktarı giriniz.")
-                    }
-                } else {
-                    showEmptyValueToast("Lütfen listeden yiyecek seçiniz.")
-                }
-            } else {
-                showEmptyValueToast("Lütfen yiyecek seçiniz.")
             }
         }
     }
@@ -356,26 +305,26 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            val model = mealList!![holder.adapterPosition]
+            val model = mealList[holder.adapterPosition]
             item_meal_txt_food_name.text = horizontalListadapter[holder.adapterPosition].MealName
             item_meal_txt_food_carbs.text = "Karbonhidrat " + NumberFormatManager.getFormattedNumber(model!!.CarbsInMeal)
             item_meal_txt_quantity.text =
                 NumberFormatManager.getFormattedNumber(horizontalListadapter[holder.adapterPosition].Quantity) + " " +
                         horizontalListadapter[holder.adapterPosition].Unit
             btn_delete_item_from_meal.setOnClickListener {
-                if (mealList!!.size > 1) {
+                if (mealList.size > 1) {
                     totalCarbs -= horizontalListadapter[holder.adapterPosition].CarbsInMeal
                     setTxtCarbCounter(View.VISIBLE)
                 } else {
                     totalCarbs = 0.0
                     setTxtCarbCounter(View.GONE)
                 }
-                mealList!!.remove(mealList!![holder.adapterPosition])
-                rvAdapter!!.notifyDataSetChanged()
+                mealList.remove(mealList[holder.adapterPosition])
+                rvAdapter.notifyDataSetChanged()
             }
 
             btn_add_favourites.setColorFilter(
-                if (isFavourite(mealList!![holder.adapterPosition]!!))
+                if (isFavourite(mealList[holder.adapterPosition]!!))
                     ContextCompat.getColor(this@AddFoodActivity, R.color.color_fav)
                 else
                     ContextCompat.getColor(this@AddFoodActivity, R.color.colorBackground)
@@ -428,8 +377,7 @@ class AddFoodActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
 
         override fun getItemCount(): Int {
-            return mealList!!.size
+            return mealList.size
         }
     }
-    private fun init_Firebase() {}
 }

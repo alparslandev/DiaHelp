@@ -26,5 +26,10 @@
     <string name="meal_other">Diğer</string>
     <string name="print_food">Yiyecek yazınız...</string>
     <string name="quantity">Miktar</string>
-
+    <string name="choose_unit">Birim Seçiniz</string>
+    <string name="carb_quantity_in_meal">Bir %s %s %s gr karbonhirat içerir</string>
+    <string name="total_carb">Toplam Karbonhidrat: %d</string>
+    <string name="empty_quantity">Lütfen miktarı giriniz.</string>
+    <string name="choose_meal_from_list">Lütfen listeden yiyecek seçiniz.</string>
+    <string name="choose_meal">Lütfen yiyecek seçiniz.</string>
 </resources>
