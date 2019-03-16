@@ -1,4 +1,4 @@
-package tools;
+package com.diahelp.tools;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
