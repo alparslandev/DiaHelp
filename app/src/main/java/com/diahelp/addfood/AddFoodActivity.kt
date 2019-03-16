@@ -19,6 +19,7 @@ import com.google.firebase.database.*
 import io.realm.RealmList
 import kotlinx.android.synthetic.main.activity_add_food.*
 import com.diahelp.tools.Number
+import com.diahelp.tools.updateById
 
 import java.util.ArrayList
 
@@ -32,8 +33,6 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     private val foods = ArrayList<String>()
     private var mealList = RealmList<MealPlan>()
     private var rvAdapter = FoodsAdapter(mealList, this)
-
-
     private lateinit var foodDBAdapter: ArrayAdapter<String>
     private lateinit var unitListAdapter: ArrayAdapter<String>
 
@@ -87,7 +86,6 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
         }
 
         btn_add_to_meal_plan.setOnClickListener {
-            // todo bu butona aktif olmadıkça basılamasın.
             if (!TextUtils.isEmpty(choosenFood)) {
                 if (foods.contains(edt_choose_food.text.toString())) {
                     val txt = edt_add_food_quantity.text.toString()
@@ -160,7 +158,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
     private fun updateMealList(mealPlan: MealPlan) {
         mealList.add(0, mealPlan)
-        totalCarbs += mealPlan.CarbsInMeal * mealPlan.Quantity
+        totalCarbs += mealPlan.CarbsInMeal
         setTxtCarbCounter(View.VISIBLE)
         clearViewItems(false)
     }
@@ -245,7 +243,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             .equalTo("Quantity", meal.Quantity)
             .equalTo("Unit", meal.Unit)
             .findAll()
-        return if (realmFav.size < 1) -1 else realmFav.get(0)!!.Id*/
+        return if (realmFav.size < 1) -1 else realmFav.get(0)!!.Identity*/
         return 1
     }
 
@@ -280,6 +278,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             fav.MealName = model.MealName
             fav.CarbsInMeal = model.CarbsInMeal
         })*/
+        mealList.updateById(mealPlan.Id, mealPlan, mealList)
         showSuccessToast(getString(R.string.meal_added_to_favourites))
     }
 
@@ -287,9 +286,10 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
         /*val id = getFavourite(model)
         btn_add_favourites.setColorFilter(ContextCompat.getColor(this@AddFoodActivity, R.color.colorBackground))
         mRealm.executeTransaction(Realm.Transaction { realm ->
-        val results = realm.where(FavouriteMeals::class.java).equalTo("Id", id).findFirst()
+        val results = realm.where(FavouriteMeals::class.java).equalTo("Identity", id).findFirst()
         results!!.deleteFromRealm()
         })*/
+        mealList.updateById(mealPlan.Id, mealPlan, mealList)
         showSuccessToast(getString(R.string.meal_removed_from_favourites))
     }
 

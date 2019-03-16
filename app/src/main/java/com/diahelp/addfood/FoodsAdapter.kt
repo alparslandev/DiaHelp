@@ -33,18 +33,13 @@ class FoodsAdapter(private val mealList: List<MealPlan>, private val listener : 
             context.getString(R.string.quantity_unit), Number.format(model.Quantity), model.Unit
         )
 
-        holder.itemView.btn_delete_item_from_meal.setOnClickListener {
-            listener.onDeleteClickListener(model)
-        }
-
+        holder.itemView.btn_delete_item_from_meal.setOnClickListener{ listener.onDeleteClickListener(model) }
         refreshFavColorFilter(model, holder)
-
         holder.itemView.btn_add_favourites.setOnClickListener {
-            if (!model.isFavourite) {
-                listener.onDeleteClickListener(model)
-            } else {
-                listener.onAddFavClickListener(model)
-            }
+            model.isFavourite = !model.isFavourite
+            if (model.isFavourite) listener.onRemoveFavClickListener(model)
+            else listener.onAddFavClickListener(model)
+            refreshFavColorFilter(model, holder)
             listener.refreshFavButton()
         }
     }
