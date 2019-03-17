@@ -56,10 +56,10 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     private val favouriteList: List<FavouriteMeals>
         get() {
             val modelList = ArrayList<FavouriteMeals>()
-            /*val list = mRealm.where(FavouriteMeals::class.java).findAll()
+            val list = mRealm.where(FavouriteMeals::class.java).findAll()
             for (model in list) {
                 modelList.add(model)
-            }*/
+            }
             return modelList
         }
 

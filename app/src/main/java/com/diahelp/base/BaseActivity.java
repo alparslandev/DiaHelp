@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import com.diahelp.R;
+import com.diahelp.model.FavouriteMeals;
 import com.diahelp.ui.toast.EmptyValue;
 import com.diahelp.ui.toast.SuccessToast;
+import io.realm.Realm;
 
 public abstract class BaseActivity extends AppCompatActivity {
     Context context;
     private InputMethodManager imm;
-    //public Realm mRealm;
+    public Realm mRealm;
     private int nextId;
 
     @Override
@@ -19,7 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context = this;
         imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        //mRealm = Realm.getDefaultInstance();
+        mRealm = Realm.getDefaultInstance();
     }
 
     //Klavyeyi Tüm activity lerden ulaşarak kapatabilmek için.
@@ -27,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         try {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } catch (Exception e) {
-            showEmptyValueToast("Beklenmeyen bir hata oluştu.");
+            showEmptyValueToast(getString(R.string.unexpected_error));
         }
     }
 
@@ -44,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 currentIdNum = mRealm.where(BloodGlucose.class).max("Id");
                 break;*/
             case "fav":
-                //currentIdNum = mRealm.where(FavouriteMeals.class).max("Id");
+                currentIdNum = mRealm.where(FavouriteMeals.class).max("Id");
                 break;
         }
 
