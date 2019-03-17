@@ -12,7 +12,9 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    open val EXTRA_TYPE = "EXTRA_TYPE"
+    companion object {
+        val EXTRA_TYPE = "EXTRA_TYPE"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

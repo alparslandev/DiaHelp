@@ -36,4 +36,5 @@
     <string name="quantity_unit">%s %s</string>
     <string name="meal_added_to_favourites">Yiyecek Favorilere Eklendi</string>
     <string name="meal_removed_from_favourites">Yiyecek Favorilerden Çıkarıldı</string>
+    <string name="unexpected_error">Beklenmeyen bir hata oluştu.</string>
 </resources>

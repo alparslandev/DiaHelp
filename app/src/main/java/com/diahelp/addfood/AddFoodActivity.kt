@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
+import com.diahelp.MainActivity
 import com.diahelp.R
 import com.diahelp.base.BaseActivity
 import com.diahelp.model.FavouriteMeals
@@ -25,7 +26,7 @@ import java.util.ArrayList
 
 class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
-    private val mealName = ""
+    private lateinit var repast : String // Önceki sayfada seçilen öğün
     private var carb_value = ""
     private var choosenFood = ""
     private var totalCarbs = 0.0
@@ -47,6 +48,9 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                 edt_choose_food.setAdapter(foodDBAdapter)
             }
         })
+        if (intent != null && intent.extras != null && intent.getStringExtra(MainActivity.EXTRA_TYPE) != null) {
+            repast = intent.getStringExtra(MainActivity.EXTRA_TYPE)
+        }
     }
 
     private val favouriteList: List<FavouriteMeals>
@@ -96,7 +100,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                         model.Unit = spinner_unit.selectedItem.toString()
                         model.Id = getMaxID("meal")
                         model.Quantity = txt.toDouble()
-                        model.Meal = mealName
+                        model.Repast = repast
                         updateMealList(model)
                     } else {
                         showEmptyValueToast(getString(R.string.empty_quantity))
@@ -202,14 +206,14 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     inner class FavMealsHandler(internal var context: Context) : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            val (Id, MealName, CarbsInMeal, Quantity, Unit) = favouriteList[msg.obj as Int]
+            val model = msg.obj as FavouriteMeals
             val mealPlan = MealPlan()
-            mealPlan.Meal = mealName
-            mealPlan.CarbsInMeal = CarbsInMeal
-            mealPlan.MealName = MealName
-            mealPlan.Quantity = Quantity
-            mealPlan.Unit = Unit
-            mealPlan.Id = Id
+            mealPlan.Repast = repast
+            mealPlan.CarbsInMeal = model.CarbsInMeal
+            mealPlan.MealName = model.MealName
+            mealPlan.Quantity = model.Quantity
+            mealPlan.Unit = model.Unit
+            mealPlan.Id = model.Id
             updateMealList(mealPlan)
         }
     }
