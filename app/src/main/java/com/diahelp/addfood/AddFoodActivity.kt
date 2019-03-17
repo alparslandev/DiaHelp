@@ -26,7 +26,6 @@ import java.util.ArrayList
 
 class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
-    private lateinit var repast : String // Önceki sayfada seçilen öğün
     private var carb_value = ""
     private var choosenFood = ""
     private var totalCarbs = 0.0
@@ -48,9 +47,11 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                 edt_choose_food.setAdapter(foodDBAdapter)
             }
         })
-        if (intent != null && intent.extras != null && intent.getStringExtra(MainActivity.EXTRA_TYPE) != null) {
-            repast = intent.getStringExtra(MainActivity.EXTRA_TYPE)
-        }
+    }
+
+    private fun getRepast() : String { // Önceki sayfada seçilen öğün
+        return if (intent != null && intent.extras != null && intent.getStringExtra(MainActivity.EXTRA_TYPE) != null)
+            intent.getStringExtra(MainActivity.EXTRA_TYPE) else ""
     }
 
     private val favouriteList: List<FavouriteMeals>
@@ -100,7 +101,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                         model.Unit = spinner_unit.selectedItem.toString()
                         model.Id = getMaxID("meal")
                         model.Quantity = txt.toDouble()
-                        model.Repast = repast
+                        model.Repast = getRepast()
                         updateMealList(model)
                     } else {
                         showEmptyValueToast(getString(R.string.empty_quantity))
@@ -208,7 +209,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             super.handleMessage(msg)
             val model = msg.obj as FavouriteMeals
             val mealPlan = MealPlan()
-            mealPlan.Repast = repast
+            mealPlan.Repast = getRepast()
             mealPlan.CarbsInMeal = model.CarbsInMeal
             mealPlan.MealName = model.MealName
             mealPlan.Quantity = model.Quantity

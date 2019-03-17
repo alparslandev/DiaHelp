@@ -35,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public int getMaxID(final String name) {
+        // TODO make this IntDef and make ID a constant
         Number currentIdNum = null;
         switch (name) {
             /*case "food":
