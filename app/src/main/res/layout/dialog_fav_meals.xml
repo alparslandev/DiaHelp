@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_rounded"
+                android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/choose_a_meal"
+            android:textSize="18sp"/>
+
+    <ImageView
+            android:id="@+id/btn_dialog_fav_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:padding="10dp"
+            android:background="?selectableItemBackgroundBorderless"/>
+
+    <FrameLayout
+            style="@style/Layout"
+            android:layout_below="@id/btn_dialog_fav_cancel"/>
+
+    <ListView
+            android:id="@+id/dialog_list_fav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dip"
+            android:paddingRight="8dip"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/btn_dialog_fav_cancel"/>
+
+</RelativeLayout>

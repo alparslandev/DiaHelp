@@ -55,7 +55,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             intent.getStringExtra(MainActivity.EXTRA_TYPE) else ""
     }
 
-    private val favouriteList: List<FavouriteMeals>
+    private val favouriteList: List<FavouriteMeals> // TODO refactor this
         get() {
             val modelList = ArrayList<FavouriteMeals>()
             val list = mRealm.where(FavouriteMeals::class.java).findAll()
@@ -171,11 +171,10 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     }
 
     private fun setFavButtonEnable() {
-        btn_add_food_open_favs.setOnClickListener {
-            /* if (favouriteList.size > 0)
-                 setFavDialog()*/
-        }
         btn_add_food_open_favs.isEnabled = favouriteList.size != 0
+        btn_add_food_open_favs.setOnClickListener {
+            setFavDialog()
+        }
     }
 
     fun clearViewItems(isChoosenIncluded: Boolean) {
@@ -234,14 +233,14 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             // TODO: Kan şekeri değeri buraya gelmektedir. Buradan veri tabanına iletilmesi gerekmektedir.
             val bloodSugar = msg.obj as String
         }
-    }
+    }*/
 
     private fun setFavDialog() {
         val favMealsDialog = FavouriteMealsDialog(this, FavMealsHandler(this), favouriteList)
         favMealsDialog.show()
         favMealsDialog.setCancelable(true)
         favMealsDialog.setCanceledOnTouchOutside(true)
-    }*/
+    }
 
     private fun getFavourite(meal: MealPlan): Int {
         // TODO refactor fieldNames
