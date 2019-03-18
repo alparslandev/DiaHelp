@@ -51,7 +51,7 @@ class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     }
 
     fun getDateStr() : String {
-        return txt_date.toString()
+        return txt_date.text.toString()
     }
 
     fun getDateCalendar() : Calendar {

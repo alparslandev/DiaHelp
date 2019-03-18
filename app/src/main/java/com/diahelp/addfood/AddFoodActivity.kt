@@ -1,6 +1,7 @@
 package com.diahelp.addfood
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -13,6 +14,7 @@ import com.diahelp.MainActivity
 import com.diahelp.R
 import com.diahelp.base.BaseActivity
 import com.diahelp.model.FavouriteMeals
+import com.diahelp.model.Foods
 import com.diahelp.model.MealPlan
 import com.diahelp.tools.wrappers.ChildEventListenerWrapper
 import com.diahelp.tools.wrappers.TextWatcherWrapper
@@ -20,10 +22,9 @@ import com.google.firebase.database.*
 import io.realm.RealmList
 import kotlinx.android.synthetic.main.activity_add_food.*
 import com.diahelp.tools.Number
-import com.diahelp.tools.updateById
+import com.diahelp.tools.StringRealm
 import io.realm.Realm
-
-import java.util.ArrayList
+import java.util.*
 
 class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
@@ -50,15 +51,12 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
         })
     }
 
-    private fun getRepast(): String { // Önceki sayfada seçilen öğün
-        return if (intent != null && intent.extras != null && intent.getStringExtra(MainActivity.EXTRA_TYPE) != null)
-            intent.getStringExtra(MainActivity.EXTRA_TYPE) else ""
+    private fun getExtras(type : String): String { // Önceki sayfada seçilen öğün
+        return if (intent != null && intent.extras != null && intent.getStringExtra(type) != null)
+            intent.getStringExtra(type) else ""
     }
 
-    private val favouriteList: List<FavouriteMeals>
-        get() {
-            return mRealm.where(FavouriteMeals::class.java).findAll()
-        }
+    private val favouriteList: List<FavouriteMeals> get() { return mRealm.where(FavouriteMeals::class.java).findAll() }
 
     fun initComponents() {
         foodDBAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, foods)
@@ -97,7 +95,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                         model.Unit = spinner_unit.selectedItem.toString()
                         model.Id = getMaxID("meal")
                         model.Quantity = txt.toDouble()
-                        model.Repast = getRepast()
+                        model.Repast = getExtras(MainActivity.EXTRA_REPAST)
                         model.isFavourite = isFavourite(model)
                         updateMealList(model)
                     } else {
@@ -142,6 +140,37 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                 if (count < 1) clearViewItems(true)
             }
         })
+
+        btn_save_meal.setOnClickListener {
+            if (mealList.size <= 0) return@setOnClickListener
+            mRealm = Realm.getDefaultInstance()
+            mRealm.executeTransaction { realm ->
+                Collections.reverse(mealList)
+                val mealFoodListToRealm = RealmList<StringRealm>()
+
+                for (i in mealList.indices) {
+                    val Id = getMaxID("meal")
+                    val meal = realm.createObject(MealPlan::class.java, Id)
+                    meal.Unit = mealList[i]!!.Unit
+                    meal.Quantity = mealList[i]!!.Quantity
+                    meal.MealName = mealList[i]!!.MealName
+                    meal.CarbsInMeal = mealList[i]!!.CarbsInMeal
+                    meal.Repast = mealList[i]!!.Repast
+                    val stringRealm = realm.createObject(StringRealm::class.java)
+                    stringRealm.mealId = Id.toString()
+                    mealFoodListToRealm.add(stringRealm)
+                }
+                val food = realm.createObject(Foods::class.java, getMaxID("food"))
+                food.mealIds = mealFoodListToRealm
+                food.totalCarbsOfRepast = totalCarbs
+                food.Repast = getExtras(MainActivity.EXTRA_REPAST)
+                food.foodDate = getExtras(MainActivity.EXTRA_CHOSEN_DATE)
+
+            }
+            finish()
+            startActivity(Intent(it.context, MainActivity::class.java))
+
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,7 +237,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             mealPlan.CarbsInMeal = model.CarbsInMeal
             mealPlan.MealName = model.MealName
             mealPlan.Quantity = model.Quantity
-            mealPlan.Repast = getRepast()
+            mealPlan.Repast = getExtras(MainActivity.EXTRA_REPAST)
             mealPlan.isFavourite = true
             mealPlan.Unit = model.Unit
             mealPlan.Id = model.Id

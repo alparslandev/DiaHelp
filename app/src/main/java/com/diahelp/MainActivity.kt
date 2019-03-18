@@ -13,7 +13,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        val EXTRA_TYPE = "EXTRA_TYPE"
+        const val EXTRA_REPAST = "EXTRA_TYPE"
+        const val EXTRA_CHOSEN_DATE = "EXTRA_CHOSEN_DATE"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +24,12 @@ class MainActivity : AppCompatActivity() {
         refreshSumofCarbs(0)
         dv_date.onClickListener(object : DayView.Listener {
             override fun onClickBackward(date: Calendar) {
+                // TODO Realm query by Date and Repast
                 refreshSumofCarbs(90)
             }
 
             override fun onClickForward(date: Calendar) {
-
+                // TODO Realm query by Date and Repast
             }
         })
 
@@ -47,7 +49,8 @@ class MainActivity : AppCompatActivity() {
     fun redirectToAddFoods(view : View?) {
         val text = (view as MealTimeView).getText()
         val intent = Intent(this, AddFoodActivity::class.java)
-        intent.putExtra(EXTRA_TYPE, text)
+        intent.putExtra(EXTRA_REPAST, text)
+        intent.putExtra(EXTRA_CHOSEN_DATE, dv_date.getDateStr())
         startActivity(intent)
     }
 

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import com.diahelp.R;
 import com.diahelp.model.FavouriteMeals;
+import com.diahelp.model.Foods;
+import com.diahelp.model.MealPlan;
 import com.diahelp.ui.toast.EmptyValue;
 import com.diahelp.ui.toast.SuccessToast;
 import io.realm.Realm;
@@ -38,11 +40,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         // TODO make this IntDef and make ID a constant
         Number currentIdNum = null;
         switch (name) {
-            /*case "food":
+            case "food":
                 currentIdNum = mRealm.where(Foods.class).max("Id");
-                break;*/
+                break;
             case "meal":
-                //currentIdNum = mRealm.where(MealPlan.class).max("Id");
+                currentIdNum = mRealm.where(MealPlan.class).max("Id");
                 break;
             /*case "bloodGlucose":
                 currentIdNum = mRealm.where(BloodGlucose.class).max("Id");
