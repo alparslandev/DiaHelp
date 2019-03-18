@@ -3,6 +3,7 @@ package com.diahelp.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import com.diahelp.R
 import kotlinx.android.synthetic.main.view_meal_time.view.*
@@ -24,7 +25,19 @@ class MealTimeView @JvmOverloads constructor(context: Context, attrs: AttributeS
         a.recycle()
     }
 
+    fun setTotalCarb(text : String) {
+        img_button_meal_icon.visibility = View.GONE
+        tv_repast_total_carb.visibility = View.VISIBLE
+        tv_repast_total_carb.text = String.format(context.getString(R.string.gram), text)
+    }
+
     fun getText() : String {
         return txt_meal.text.toString()
+    }
+
+    fun refresh() {
+        img_button_meal_icon.visibility = View.VISIBLE
+        tv_repast_total_carb.visibility = View.GONE
+        tv_repast_total_carb.text = ""
     }
 }

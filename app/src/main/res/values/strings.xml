@@ -39,4 +39,16 @@
     <string name="unexpected_error">Beklenmeyen bir hata oluştu.</string>
     <string name="choose_a_meal">Öğün seçiniz...</string>
     <string name="favourite_meal_info">%s\n%s %s %s gr Karbonhidrat</string>
+    <string name="gram">"%s\ngr"</string>
+    <string-array name="repasts">
+        <item>Kahvaltı</item>
+        <item>Ara Öğün - Kahvaltı</item>
+        <item>Öğle Yemeği</item>
+        <item>Ara Öğün - Öğle</item>
+        <item>Akşam Yemeği</item>
+        <item>Ara Öğün - Akşam</item>
+        <item>Yatmadan Önce</item>
+        <item>03:00</item>
+        <item>Diğer</item>
+    </string-array>
 </resources>
