@@ -21,6 +21,7 @@ import io.realm.RealmList
 import kotlinx.android.synthetic.main.activity_add_food.*
 import com.diahelp.tools.Number
 import com.diahelp.tools.updateById
+import io.realm.Realm
 
 import java.util.ArrayList
 
@@ -49,7 +50,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
         })
     }
 
-    private fun getRepast() : String { // Önceki sayfada seçilen öğün
+    private fun getRepast(): String { // Önceki sayfada seçilen öğün
         return if (intent != null && intent.extras != null && intent.getStringExtra(MainActivity.EXTRA_TYPE) != null)
             intent.getStringExtra(MainActivity.EXTRA_TYPE) else ""
     }
@@ -102,6 +103,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                         model.Id = getMaxID("meal")
                         model.Quantity = txt.toDouble()
                         model.Repast = getRepast()
+                        model.isFavourite = isFavourite(model)
                         updateMealList(model)
                     } else {
                         showEmptyValueToast(getString(R.string.empty_quantity))
@@ -242,25 +244,24 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     }*/
 
     private fun getFavourite(meal: MealPlan): Int {
-        /*val realmFav = mRealm.where(FavouriteMeals::class.java)
+        // TODO refactor fieldNames
+        val realmFav = mRealm.where(FavouriteMeals::class.java)
             .equalTo("MealName", meal.MealName)
             .equalTo("CarbsInMeal", meal.CarbsInMeal)
             .equalTo("Quantity", meal.Quantity)
             .equalTo("Unit", meal.Unit)
             .findAll()
-        return if (realmFav.size < 1) -1 else realmFav.get(0)!!.Identity*/
-        return 1
+        return if (realmFav.size < 1) -1 else realmFav.get(0)!!.Id
     }
 
     private fun isFavourite(meal: MealPlan): Boolean {
-        /*val realmFav = mRealm.where(FavouriteMeals::class.java)
+        val realmFav = mRealm.where(FavouriteMeals::class.java)
             .equalTo("MealName", meal.MealName)
             .equalTo("CarbsInMeal", meal.CarbsInMeal)
             .equalTo("Quantity", meal.Quantity)
             .equalTo("Unit", meal.Unit)
             .findAll()
-        return realmFav.size > 0*/
-        return true
+        return realmFav.size > 0
     }
 
     override fun onDeleteClickListener(mealPlan: MealPlan) {
@@ -276,25 +277,22 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     }
 
     override fun onAddFavClickListener(mealPlan: MealPlan) {
-        /*mRealm.executeTransaction(Realm.Transaction { realm ->
+        mRealm.executeTransaction(Realm.Transaction { realm ->
             val fav = realm.createObject(FavouriteMeals::class.java, getMaxID("fav"))
-            fav.Unit = model.Unit
-            fav.Quantity = model.Quantity
-            fav.MealName = model.MealName
-            fav.CarbsInMeal = model.CarbsInMeal
-        })*/
-        mealList.updateById(mealPlan.Id, mealPlan, mealList)
+            fav.Unit = mealPlan.Unit
+            fav.Quantity = mealPlan.Quantity
+            fav.MealName = mealPlan.MealName
+            fav.CarbsInMeal = mealPlan.CarbsInMeal
+        })
         showSuccessToast(getString(R.string.meal_added_to_favourites))
     }
 
     override fun onRemoveFavClickListener(mealPlan: MealPlan) {
-        /*val id = getFavourite(model)
-        btn_add_favourites.setColorFilter(ContextCompat.getColor(this@AddFoodActivity, R.color.colorBackground))
+        val id = getFavourite(mealPlan)
         mRealm.executeTransaction(Realm.Transaction { realm ->
-        val results = realm.where(FavouriteMeals::class.java).equalTo("Identity", id).findFirst()
-        results!!.deleteFromRealm()
-        })*/
-        mealList.updateById(mealPlan.Id, mealPlan, mealList)
+            val results = realm.where(FavouriteMeals::class.java).equalTo("Id", id).findFirst()
+            results!!.deleteFromRealm()
+        })
         showSuccessToast(getString(R.string.meal_removed_from_favourites))
     }
 

@@ -37,7 +37,7 @@ class FoodsAdapter(private val mealList: List<MealPlan>, private val listener : 
         refreshFavColorFilter(model, holder)
         holder.itemView.btn_add_favourites.setOnClickListener {
             model.isFavourite = !model.isFavourite
-            if (model.isFavourite) listener.onRemoveFavClickListener(model)
+            if (!model.isFavourite) listener.onRemoveFavClickListener(model)
             else listener.onAddFavClickListener(model)
             refreshFavColorFilter(model, holder)
             listener.refreshFavButton()
