@@ -38,4 +38,5 @@
     <string name="meal_removed_from_favourites">Yiyecek Favorilerden Çıkarıldı</string>
     <string name="unexpected_error">Beklenmeyen bir hata oluştu.</string>
     <string name="choose_a_meal">Öğün seçiniz...</string>
+    <string name="favourite_meal_info">%s\n%s %s %s gr Karbonhidrat</string>
 </resources>

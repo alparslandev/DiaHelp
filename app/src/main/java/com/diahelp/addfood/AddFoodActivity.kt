@@ -55,14 +55,9 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             intent.getStringExtra(MainActivity.EXTRA_TYPE) else ""
     }
 
-    private val favouriteList: List<FavouriteMeals> // TODO refactor this
+    private val favouriteList: List<FavouriteMeals>
         get() {
-            val modelList = ArrayList<FavouriteMeals>()
-            val list = mRealm.where(FavouriteMeals::class.java).findAll()
-            for (model in list) {
-                modelList.add(model)
-            }
-            return modelList
+            return mRealm.where(FavouriteMeals::class.java).findAll()
         }
 
     fun initComponents() {
@@ -210,10 +205,11 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             super.handleMessage(msg)
             val model = msg.obj as FavouriteMeals
             val mealPlan = MealPlan()
-            mealPlan.Repast = getRepast()
             mealPlan.CarbsInMeal = model.CarbsInMeal
             mealPlan.MealName = model.MealName
             mealPlan.Quantity = model.Quantity
+            mealPlan.Repast = getRepast()
+            mealPlan.isFavourite = true
             mealPlan.Unit = model.Unit
             mealPlan.Id = model.Id
             updateMealList(mealPlan)
@@ -283,6 +279,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             fav.MealName = mealPlan.MealName
             fav.CarbsInMeal = mealPlan.CarbsInMeal
         })
+        updateMeals(mealPlan)
         showSuccessToast(getString(R.string.meal_added_to_favourites))
     }
 
@@ -292,7 +289,17 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             val results = realm.where(FavouriteMeals::class.java).equalTo("Id", id).findFirst()
             results!!.deleteFromRealm()
         })
+        updateMeals(mealPlan)
         showSuccessToast(getString(R.string.meal_removed_from_favourites))
+    }
+
+    private fun updateMeals(model : MealPlan) {
+        for (m in mealList) {
+            if (model.Id == m.Id && model.Unit == m.Unit && model.Quantity == m.Quantity) {
+                mealList.set(mealList.indexOf(m), model)
+            }
+        }
+        rvAdapter.notifyDataSetChanged()
     }
 
     override fun refreshFavButton() {
