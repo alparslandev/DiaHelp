@@ -17,7 +17,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     Context context;
     private InputMethodManager imm;
     public Realm mRealm;
-    private int nextId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public int getMaxID(final String name) {
         // TODO make this IntDef and make ID a constant
-        Number currentIdNum = null;
+        Number currentIdNum = 1;
         switch (name) {
             case "food":
                 currentIdNum = mRealm.where(Foods.class).max("Id");
@@ -53,14 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 currentIdNum = mRealm.where(FavouriteMeals.class).max("Id");
                 break;
         }
-
-        if (currentIdNum == null)
-            nextId = 1;
-        else {
-            nextId = currentIdNum.intValue() + 1;
-        }
-
-        return nextId;
+        return currentIdNum == null ? 1 : (currentIdNum.intValue() + 1);
     }
 
     public void showEmptyValueToast(String text) {

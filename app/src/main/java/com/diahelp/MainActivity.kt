@@ -12,6 +12,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    // todo kaydedilen yiyeceklerin karbonhiratlarını hesapla
     companion object {
         const val EXTRA_REPAST = "EXTRA_TYPE"
         const val EXTRA_CHOSEN_DATE = "EXTRA_CHOSEN_DATE"

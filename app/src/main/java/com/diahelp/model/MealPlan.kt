@@ -1,15 +1,18 @@
 package com.diahelp.model
 
 import io.realm.RealmObject
+import io.realm.RealmResults
+import io.realm.annotations.LinkingObjects
 import io.realm.annotations.PrimaryKey
 
-open class MealPlan (
+open class MealPlan : RealmObject() {
     @PrimaryKey
-    open var Id : Int = 0,
-    open var MealName: String = "",
-    open var CarbsInMeal: Double = 0.0,
-    open var Quantity: Double = 0.0,
-    open var Unit: String = "",
-    open var Repast: String = "", // Yemek yenilen ana ekrandan seçilen Öğün
-    open var isFavourite: Boolean = false
-) : RealmObject()
+    var Id : Int = 0
+    var MealName: String = ""
+    var CarbsInMeal: Double = 0.0
+    var Quantity: Double = 0.0
+    var Unit: String = ""
+    var isFavourite: Boolean = false
+    @LinkingObjects("mealPlans")
+    val owners: RealmResults<Foods>? = null
+}
