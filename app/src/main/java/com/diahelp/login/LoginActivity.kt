@@ -8,7 +8,6 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.View
 import com.diahelp.MainActivity
 import com.diahelp.R
@@ -27,7 +26,6 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presenter>(), LoginContract.View {
 
     companion object {
-        private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
     }
 
@@ -58,8 +56,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presente
         auth = FirebaseAuth.getInstance()
 
         val spannableString = SpannableString(
-            resources.getString(R.string.user_agreement_text_prefix)
-                    + " " + resources.getString(R.string.user_agreement_text)
+            resources.getString(R.string.user_agreement_text_prefix) + " " + resources.getString(R.string.user_agreement_text)
         )
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -72,60 +69,45 @@ class LoginActivity : BaseMvpActivity<LoginContract.View, LoginContract.Presente
                 ds.isUnderlineText = true
             }
         }
-        spannableString.setSpan(
-            clickableSpan,0,
-            resources.getString(R.string.user_agreement_text_prefix).length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        spannableString.setSpan(clickableSpan,0,
+            resources.getString(R.string.user_agreement_text_prefix).length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         tv_user_agreement.text = spannableString
         tv_user_agreement.movementMethod = LinkMovementMethod.getInstance()
         tv_user_agreement.highlightColor = Color.TRANSPARENT
 
-        chk_user_agreement.setOnCheckedChangeListener {_, isChecked ->
-            btn_sign_in.isEnabled = isChecked
-        }
+        chk_user_agreement.setOnCheckedChangeListener {_, isChecked -> btn_sign_in.isEnabled = isChecked }
     }
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
                 updateUI(null)
             }
         }
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
         showLoading(View.VISIBLE)
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    //Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
                     updateUI(null)
                 }
                 showLoading(View.GONE)

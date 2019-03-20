@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Window
-import android.widget.TextView
 import com.diahelp.R
 import kotlinx.android.synthetic.main.dialog_user_agreement.*
 
@@ -18,9 +17,8 @@ class UserAgreementDialog(context: Context) : Dialog(context) {
         setContentView(R.layout.dialog_user_agreement)
         window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
         iv_close.setOnClickListener{ dismiss() }
-        val txtBookReferance = findViewById(R.id.txt_referance_book) as TextView
-        txtBookReferance.movementMethod = LinkMovementMethod.getInstance()
-        txtBookReferance.isClickable = true
+        txt_referance_book.movementMethod = LinkMovementMethod.getInstance()
+        txt_referance_book.isClickable = true
         /*if (!isFirstTime) {
                    txtBookReferance.setText(Html.fromHtml("<h4>Hakkında</h4>" +
                            "Bu uygulamada yer alan besin değerleri diyetisyen Emel Özer’in <a style=\"color:white\" href=\"http://www.hayykitap.com/haber.php?haber_id=9\">" +
@@ -29,7 +27,7 @@ class UserAgreementDialog(context: Context) : Dialog(context) {
                            "istediğiniz yiyeceklerin veritabanına eklenmesini sağlayabilirsiniz.\n"));
 
                } else {*/
-        txtBookReferance.text = Html.fromHtml(
+        txt_referance_book.text = Html.fromHtml(
             "<h4>Kullanıcı Sözleşmesi</h4>Bu uygulama tıbbi bir uygulama değildir. Buradaki bilgiler doktorunuz " +
                     "veya diyetisyeninizin yerine geçmez. Herhangi bir tıbbi tedavi alıyorsanız doktorunuz ve diyetisyeninizin tavsiyelerini esas almanız gerekmektedir. " +
                     "Buradaki bilgiler ve hesaplamalar tavsiye niteliğinde olmayıp genel bilgi olarak kabul edilmelidir. Emin olmadığınız durumlarda sağlık personeline başvurunuz." +

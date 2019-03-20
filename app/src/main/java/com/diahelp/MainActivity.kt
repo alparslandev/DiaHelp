@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.diahelp.addfood.AddFoodActivity
 import com.diahelp.base.BaseActivity
+import com.diahelp.model.Const
 import com.diahelp.model.Foods
 import com.diahelp.ui.DayView
 import com.diahelp.ui.MealTimeView
@@ -65,11 +66,11 @@ class MainActivity : BaseActivity() {
     private fun refreshRepastsByDate() {
         clearRepasts()
         var totalCarbsOfDay = 0.0
-        var carbsOfRepast = 0.0
+        var carbsOfRepast: Double
         for (repast in resources.getStringArray(R.array.repasts)) {
             val model = mRealm.where(Foods::class.java)
-                .equalTo("foodDate", dv_date.getDateStr())
-                .equalTo("Repast", repast)
+                .equalTo(Const.FOOD_DATE, dv_date.getDateStr())
+                .equalTo(Const.REPAST, repast)
                 .findFirst() ?: continue
             carbsOfRepast = model.totalCarbsOfRepast!!
             totalCarbsOfDay += carbsOfRepast

@@ -16,19 +16,17 @@ public class SuccessToast extends Fragment {
     TextView title;
     Toast toast;
 
-    public SuccessToast() {
-    }
+    public SuccessToast() { }
 
     public SuccessToast(Activity activity) {
         this.activity = activity;
         inflater = activity.getLayoutInflater();
         view = inflater.inflate(R.layout.success_toast, null);
-        title = (TextView) view.findViewById(R.id.txt_custom_success_toast_message);
+        title = view.findViewById(R.id.txt_custom_success_toast_message);
         toast = new Toast(activity);
         toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 250);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(view);
-
     }
 
     public void showToast(String text) {

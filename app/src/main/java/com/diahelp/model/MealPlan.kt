@@ -14,5 +14,5 @@ open class MealPlan : RealmObject() {
     var Unit: String = ""
     var isFavourite: Boolean = false
     @LinkingObjects("mealPlans")
-    val owners: RealmResults<Foods>? = null
+    private val owners: RealmResults<Foods>? = null
 }

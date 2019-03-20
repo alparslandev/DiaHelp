@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.annotation.StringDef
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
@@ -13,9 +14,7 @@ import android.widget.*
 import com.diahelp.MainActivity
 import com.diahelp.R
 import com.diahelp.base.BaseActivity
-import com.diahelp.model.FavouriteMeals
-import com.diahelp.model.Foods
-import com.diahelp.model.MealPlan
+import com.diahelp.model.*
 import com.diahelp.tools.wrappers.ChildEventListenerWrapper
 import com.diahelp.tools.wrappers.TextWatcherWrapper
 import com.google.firebase.database.*
@@ -24,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_add_food.*
 import com.diahelp.tools.Number
 import com.diahelp.tools.StringRealm
 import io.realm.Realm
+import io.realm.kotlin.where
 import java.util.*
 
 class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
@@ -42,7 +42,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     var myRef: DatabaseReference
 
     init {
-        myRef = database.getReference("foods")
+        myRef = database.getReference(Const.DB_NAME)
         myRef.addChildEventListener(object : ChildEventListenerWrapper {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 foods.add(dataSnapshot.key.toString())
@@ -56,7 +56,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             intent.getStringExtra(type) else ""
     }
 
-    private val favouriteList: List<FavouriteMeals> get() { return mRealm.where(FavouriteMeals::class.java).findAll() }
+    private val favouriteList: List<FavouriteMeals> get() { return mRealm.where<FavouriteMeals>().findAll() }
 
     fun initComponents() {
         foodDBAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, foods)
@@ -93,7 +93,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
                         model.CarbsInMeal = carb_value.toDouble() * txt.toDouble()
                         model.MealName = choosenFood
                         model.Unit = spinner_unit.selectedItem.toString()
-                        model.Id = getMaxID("meal")
+                        model.Id = getMaxID(TableType.MEAL)
                         model.Quantity = txt.toDouble()
                         model.isFavourite = isFavourite(model)
                         updateMealList(model)
@@ -145,7 +145,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             mRealm = Realm.getDefaultInstance()
             mRealm.executeTransaction { realm ->
                 Collections.reverse(mealList)
-                val food = realm.createObject(Foods::class.java, getMaxID("food"))
+                val food = realm.createObject(Foods::class.java, getMaxID(TableType.FOOD))
                 food.mealPlans = RealmList<MealPlan>().apply { addAll(realm.copyToRealm(mealList)) }
                 food.totalCarbsOfRepast = totalCarbs
                 food.Repast = getExtras(MainActivity.EXTRA_REPAST)
@@ -179,9 +179,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
     private fun setFavButtonEnable() {
         btn_add_food_open_favs.isEnabled = favouriteList.size != 0
-        btn_add_food_open_favs.setOnClickListener {
-            setFavDialog()
-        }
+        btn_add_food_open_favs.setOnClickListener { setFavDialog() }
     }
 
     fun clearViewItems(isChoosenIncluded: Boolean) {
@@ -206,8 +204,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
     fun setTxtInformer(unit: String?, meal: String?, carb: String?, visibility: Int) {
         txt_informer.text = if (!TextUtils.isEmpty(unit))
-            String.format(getString(R.string.carb_quantity_in_meal), unit, meal, carb)
-        else getString(R.string.choose_unit)
+            String.format(getString(R.string.carb_quantity_in_meal), unit, meal, carb) else getString(R.string.choose_unit)
         pnl_select_unit.visibility = visibility
         pnl_quantity_add_food.visibility = visibility
     }
@@ -250,22 +247,21 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     }
 
     private fun getFavourite(meal: MealPlan): Int {
-        // TODO refactor fieldNames
-        val realmFav = mRealm.where(FavouriteMeals::class.java)
-            .equalTo("MealName", meal.MealName)
-            .equalTo("CarbsInMeal", meal.CarbsInMeal)
-            .equalTo("Quantity", meal.Quantity)
-            .equalTo("Unit", meal.Unit)
+        val realmFav = mRealm.where<FavouriteMeals>()
+            .equalTo(FieldNames.CARBSINMEAL, meal.CarbsInMeal)
+            .equalTo(FieldNames.MEALNAME, meal.MealName)
+            .equalTo(FieldNames.QUANTITY, meal.Quantity)
+            .equalTo(FieldNames.UNIT, meal.Unit)
             .findAll()
         return if (realmFav.size < 1) -1 else realmFav.get(0)!!.Id
     }
 
     private fun isFavourite(meal: MealPlan): Boolean {
-        val realmFav = mRealm.where(FavouriteMeals::class.java)
-            .equalTo("MealName", meal.MealName)
-            .equalTo("CarbsInMeal", meal.CarbsInMeal)
-            .equalTo("Quantity", meal.Quantity)
-            .equalTo("Unit", meal.Unit)
+        val realmFav = mRealm.where<FavouriteMeals>()
+            .equalTo(FieldNames.CARBSINMEAL, meal.CarbsInMeal)
+            .equalTo(FieldNames.MEALNAME, meal.MealName)
+            .equalTo(FieldNames.QUANTITY, meal.Quantity)
+            .equalTo(FieldNames.UNIT, meal.Unit)
             .findAll()
         return realmFav.size > 0
     }
@@ -284,7 +280,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
     override fun onAddFavClickListener(mealPlan: MealPlan) {
         mRealm.executeTransaction(Realm.Transaction { realm ->
-            val fav = realm.createObject(FavouriteMeals::class.java, getMaxID("fav"))
+            val fav = realm.createObject(FavouriteMeals::class.java, getMaxID(TableType.FAV))
             fav.Unit = mealPlan.Unit
             fav.Quantity = mealPlan.Quantity
             fav.MealName = mealPlan.MealName
@@ -297,7 +293,7 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
     override fun onRemoveFavClickListener(mealPlan: MealPlan) {
         val id = getFavourite(mealPlan)
         mRealm.executeTransaction(Realm.Transaction { realm ->
-            val results = realm.where(FavouriteMeals::class.java).equalTo("Id", id).findFirst()
+            val results = realm.where<FavouriteMeals>().equalTo(FieldNames.ID, id).findFirst()
             results!!.deleteFromRealm()
         })
         updateMeals(mealPlan)
@@ -306,7 +302,8 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
 
     private fun updateMeals(model : MealPlan) {
         for (m in mealList) {
-            if (model.Id == m.Id && model.Unit == m.Unit && model.Quantity == m.Quantity) {
+            if (model.CarbsInMeal == m.CarbsInMeal && model.MealName == m.MealName
+                && model.Unit == m.Unit && model.Quantity == m.Quantity) {
                 mealList.set(mealList.indexOf(m), model)
             }
         }
