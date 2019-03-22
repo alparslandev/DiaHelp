@@ -33,7 +33,10 @@ class FoodsAdapter(private val mealList: List<MealPlan>, private val listener : 
             context.getString(R.string.quantity_unit), Number.format(model.Quantity), model.Unit
         )
 
-        holder.itemView.btn_delete_item_from_meal.setOnClickListener{ listener.onDeleteClickListener(model) }
+        holder.itemView.btn_delete_item_from_meal.setOnClickListener{
+            if (itemCount == 1) return@setOnClickListener
+            listener.onDeleteClickListener(model)
+        }
         refreshFavColorFilter(model, holder)
         holder.itemView.btn_add_favourites.setOnClickListener {
             model.isFavourite = !model.isFavourite

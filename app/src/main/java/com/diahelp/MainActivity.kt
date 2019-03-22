@@ -7,14 +7,15 @@ import com.diahelp.addfood.AddFoodActivity
 import com.diahelp.base.BaseActivity
 import com.diahelp.model.Const
 import com.diahelp.model.Foods
+import com.diahelp.tools.Number
 import com.diahelp.ui.DayView
 import com.diahelp.ui.MealTimeView
+import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : BaseActivity() {
 
-    // todo kaydedilen yiyeceklerin karbonhiratlarını hesapla
     companion object {
         const val EXTRA_REPAST = "EXTRA_TYPE"
         const val EXTRA_CHOSEN_DATE = "EXTRA_CHOSEN_DATE"
@@ -27,12 +28,10 @@ class MainActivity : BaseActivity() {
         refreshRepastsByDate()
         dv_date.onClickListener(object : DayView.Listener {
             override fun onClickBackward(date: Calendar) {
-                // TODO Realm query by Date and Repast
                 refreshRepastsByDate()
             }
 
             override fun onClickForward(date: Calendar) {
-                // TODO Realm query by Date and Repast
                 refreshRepastsByDate()
             }
         })
@@ -49,6 +48,11 @@ class MainActivity : BaseActivity() {
         mv_other.setOnClickListener { v: View? -> redirectToAddFoods(v) }
 
 
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        refreshRepastsByDate()
     }
 
     private fun clearRepasts() {
@@ -68,52 +72,52 @@ class MainActivity : BaseActivity() {
         var totalCarbsOfDay = 0.0
         var carbsOfRepast: Double
         for (repast in resources.getStringArray(R.array.repasts)) {
-            val model = mRealm.where(Foods::class.java)
+            val model = mRealm.where<Foods>()
                 .equalTo(Const.FOOD_DATE, dv_date.getDateStr())
                 .equalTo(Const.REPAST, repast)
                 .findFirst() ?: continue
             carbsOfRepast = model.totalCarbsOfRepast!!
             totalCarbsOfDay += carbsOfRepast
             if (mv_snakes_breakfast.getText() == repast && carbsOfRepast > 0.0) {
-                mv_snakes_breakfast.setTotalCarb(carbsOfRepast.toString())
+                mv_snakes_breakfast.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_snakes_dining.getText() == repast && carbsOfRepast > 0.0) {
-                mv_snakes_dining.setTotalCarb(carbsOfRepast.toString())
+                mv_snakes_dining.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_snakes_lunch.getText() == repast && carbsOfRepast > 0.0) {
-                mv_snakes_lunch.setTotalCarb(carbsOfRepast.toString())
+                mv_snakes_lunch.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_before_bed.getText() == repast && carbsOfRepast != 0.0) {
-                mv_before_bed.setTotalCarb(carbsOfRepast.toString())
+                mv_before_bed.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_breakfast.getText() == repast && carbsOfRepast != 0.0) {
-                mv_breakfast.setTotalCarb(carbsOfRepast.toString())
-            }
+                mv_breakfast.setTotalCarb(carbsOfRepast)
+        }
 
             if (mv_dining.getText() == repast && carbsOfRepast != 0.0) {
-                mv_dining.setTotalCarb(carbsOfRepast.toString())
+                mv_dining.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_lunch.getText() == repast && carbsOfRepast != 0.0) {
-                mv_lunch.setTotalCarb(carbsOfRepast.toString())
+                mv_lunch.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_night.getText() == repast && carbsOfRepast != 0.0) {
-                mv_night.setTotalCarb(carbsOfRepast.toString())
+                mv_night.setTotalCarb(carbsOfRepast)
             }
 
             if (mv_other.getText() == repast && carbsOfRepast != 0.0) {
-                mv_other.setTotalCarb(carbsOfRepast.toString())
+                mv_other.setTotalCarb(carbsOfRepast)
             }
         }
         refreshSumofCarbs(totalCarbsOfDay)
     }
 
-    fun redirectToAddFoods(view : View?) {
+    private fun redirectToAddFoods(view : View?) {
         val text = (view as MealTimeView).getText()
         val intent = Intent(this, AddFoodActivity::class.java)
         intent.putExtra(EXTRA_REPAST, text)
@@ -121,9 +125,9 @@ class MainActivity : BaseActivity() {
         startActivity(intent)
     }
 
-    fun refreshSumofCarbs(sum : Double) {
+    private fun refreshSumofCarbs(sum : Double) {
         var text = resources.getString(R.string.no_carb)
-        if (sum > 0) text = String.format(resources.getString(R.string.carb_quantity), sum.toString())
+        if (sum > 0) text = String.format(resources.getString(R.string.carb_quantity), Number.format(sum))
         tv_summary.text = text
     }
 }

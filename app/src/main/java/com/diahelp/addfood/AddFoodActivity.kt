@@ -24,6 +24,7 @@ import com.diahelp.tools.Number
 import com.diahelp.tools.StringRealm
 import io.realm.Realm
 import io.realm.kotlin.where
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
@@ -144,16 +145,29 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
             if (mealList.size <= 0) return@setOnClickListener
             mRealm = Realm.getDefaultInstance()
             mRealm.executeTransaction { realm ->
-                Collections.reverse(mealList)
-                val food = realm.createObject(Foods::class.java, getMaxID(TableType.FOOD))
-                food.mealPlans = RealmList<MealPlan>().apply { addAll(realm.copyToRealm(mealList)) }
-                food.totalCarbsOfRepast = totalCarbs
-                food.Repast = getExtras(MainActivity.EXTRA_REPAST)
-                food.foodDate = getExtras(MainActivity.EXTRA_CHOSEN_DATE)
+
+                val model = getTodaysRecord()
+                if (model == null) {
+                    val food = realm.createObject(Foods::class.java, getMaxID(TableType.FOOD))
+                    food.mealPlans = RealmList<MealPlan>().apply { addAll(realm.copyToRealm(mealList)) }
+                    food.totalCarbsOfRepast = totalCarbs
+                    food.Repast = getExtras(MainActivity.EXTRA_REPAST)
+                    food.foodDate = getExtras(MainActivity.EXTRA_CHOSEN_DATE)
+                } else {
+                    model.mealPlans = RealmList<MealPlan>()
+                    model.mealPlans = RealmList<MealPlan>().apply { addAll(realm.copyToRealm(mealList)) }
+                    model.totalCarbsOfRepast = model.totalCarbsOfRepast!!.plus(totalCarbs)
+                }
             }
             finish()
             startActivity(Intent(it.context, MainActivity::class.java))
         }
+    }
+
+    private fun getTodaysRecord(): Foods? {
+        return mRealm.where<Foods>()
+            .equalTo(Const.FOOD_DATE, getExtras(MainActivity.EXTRA_CHOSEN_DATE))
+            .equalTo(Const.REPAST, getExtras(MainActivity.EXTRA_REPAST)).findFirst()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,6 +182,12 @@ class AddFoodActivity : BaseActivity(), FoodsAdapter.FoodClickListener {
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_divider))
         rv_meals.addItemDecoration(dividerItemDecoration)
+
+        val model = getTodaysRecord()
+        if (model != null && model.mealPlans != null && model.mealPlans!!.size > 0) {
+            mealList.addAll(model.mealPlans!!)
+            rvAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun updateMealList(mealPlan: MealPlan) {
