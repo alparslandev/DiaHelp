@@ -10,7 +10,6 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity android:name=".login.LoginActivity"
                   android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
@@ -21,7 +20,17 @@
         </activity>
         <activity android:name=".MainActivity"/>
         <activity android:name=".addfood.AddFoodActivity"
-                  android:windowSoftInputMode="stateHidden|adjustPan"/>
+                  android:windowSoftInputMode="stateHidden|adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"
+                      android:host="www.implementhing.com"
+                      android:pathPrefix="/aboutus"/>
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

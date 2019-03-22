@@ -1,16 +1,15 @@
 package com.diahelp.ui.toast;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.diahelp.R;
 
 public class EmptyValue extends Fragment {
-    LayoutInflater inflater;
     Activity activity;
     View view;
     TextView title;
@@ -18,10 +17,10 @@ public class EmptyValue extends Fragment {
 
     public EmptyValue() { }
 
+    @SuppressLint("ValidFragment")
     public EmptyValue(Activity activity) {
         this.activity = activity;
-        inflater = activity.getLayoutInflater();
-        view = inflater.inflate(R.layout.warning_toast, null);
+        view = View.inflate(activity.getBaseContext(), R.layout.warning_toast, null);
         title = view.findViewById(R.id.txt_custom_warning_toast_message);
         toast = new Toast(activity);
         toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 250);

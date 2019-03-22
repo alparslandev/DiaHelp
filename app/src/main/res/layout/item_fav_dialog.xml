@@ -5,7 +5,6 @@
                  android:textAppearance="?android:attr/textAppearanceListItem"
                  android:gravity="center_vertical"
                  android:foreground="?selectableItemBackgroundBorderless"
-                 android:background="?android:attr/listChoiceBackgroundIndicator"
                  android:paddingStart="8dip"
                  android:paddingEnd="8dip"
                  android:paddingBottom="8dip"

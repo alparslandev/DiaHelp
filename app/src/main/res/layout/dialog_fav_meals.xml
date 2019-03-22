@@ -11,6 +11,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btn_dialog_fav_cancel"
             android:text="@string/choose_meal_from_list"
             android:textSize="18sp"/>
 

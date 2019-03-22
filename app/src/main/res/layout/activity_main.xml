@@ -8,7 +8,6 @@
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:background="@color/grey_300"
         tools:context=".MainActivity">
 
     <com.diahelp.ui.DayView
